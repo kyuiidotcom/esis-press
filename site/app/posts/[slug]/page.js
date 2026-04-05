@@ -1,20 +1,18 @@
-import Link from "next/link";
-import { getAllPosts } from "../lib/posts";
+import { getAllPosts } from "../../../lib/posts";
 
-export default function Home() {
+export async function generateStaticParams() {
   const posts = getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
+export default function PostPage({ params }) {
+  const posts = getAllPosts();
+  const post = posts.find((p) => p.slug === params.slug);
 
   return (
     <main style={{ padding: 40 }}>
-      <h1>ESIS PRESS</h1>
-
-      {posts.map((post) => (
-        <div key={post.slug}>
-          <Link href={`/posts/${post.slug}`}>
-            <h2>{post.slug}</h2>
-          </Link>
-        </div>
-      ))}
+      <h1>{post.slug}</h1>
+      <div>{post.content}</div>
     </main>
   );
 }
